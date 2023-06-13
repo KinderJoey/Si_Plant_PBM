@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "546595156896",
+    "project_id": "siplant-23018",
+    "storage_bucket": "siplant-23018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546595156896:android:a39f550a352ae698ca2ac5",
+        "android_client_info": {
+          "package_name": "com.example.siplant_pbm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "546595156896-mkb5fusl23i7r5ilsvctfq40sovsfu9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6xYppS1kN4I78thhNj7PqAhnct2imXQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "546595156896-mkb5fusl23i7r5ilsvctfq40sovsfu9q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
