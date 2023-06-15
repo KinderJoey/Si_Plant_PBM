@@ -16,6 +16,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  double latitude = 0.0;
+  double longitude = 0.0;
+
+  Future<void> getLocation() async {
+    final PermissionStatus permissionStatus =
+        await Permission.location.request();
+
+    if (permissionStatus.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        setState(() {
+          latitude = position.latitude;
+          longitude = position.longitude;
+        });
+
+        await _registerUser();
+      } catch (e) {
+        print('Error getting location: $e');
+      }
+    } else {
+      setState(() {
+        latitude = 0.0;
+        longitude = 0.0;
+      });
+    }
+  }
 
   Future<void> _registerUser() async {
     try {
@@ -27,8 +56,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
       String password = _passwordController.text.trim();
       String address = '';
       String phoneNumber = '';
-      double latitude = 0.0;
-      double longitude = 0.0;
+
+      GeoPoint lokasi = GeoPoint(latitude, longitude);
 
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
@@ -55,8 +84,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         'email': email,
         'address': address,
         'phoneNumber': phoneNumber,
-        'latitude': latitude,
-        'longitude': longitude,
+        'lokasi': lokasi,
       });
 
       // Navigate to home page or perform other actions
@@ -113,8 +141,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
+                suffixIcon: IconButton(
+                  icon: Icon(_isPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
               ),
-              obscureText: true,
+              obscureText: !_isPasswordVisible,
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -122,7 +160,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Color(int.parse('0xFF98FFA2'))),
               ),
-              onPressed: _registerUser,
+              onPressed: getLocation,
               child: Text(
                 'Register',
                 style: TextStyle(

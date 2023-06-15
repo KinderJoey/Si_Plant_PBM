@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PemesananPage extends StatefulWidget {
   static String routeName = "/pemesanan";
@@ -22,6 +24,8 @@ class PemesananPage extends StatefulWidget {
 
 class _PemesananPageState extends State<PemesananPage> {
   String currentDate = '';
+  double latitude = 0.0;
+  double longitude = 0.0;
 
   @override
   void initState() {
@@ -29,11 +33,38 @@ class _PemesananPageState extends State<PemesananPage> {
     currentDate = DateFormat('dd MMM yyyy').format(DateTime.now());
   }
 
+  Future<void> getLocation() async {
+    final PermissionStatus permissionStatus =
+        await Permission.location.request();
+
+    if (permissionStatus.isGranted) {
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        setState(() {
+          latitude = position.latitude;
+          longitude = position.longitude;
+        });
+
+        await _pushTransaksi();
+      } catch (e) {
+        print('Error getting location: $e');
+      }
+    } else {
+      setState(() {
+        latitude = 0.0;
+        longitude = 0.0;
+      });
+    }
+  }
+
   Future<void> _pushTransaksi() async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       User? user = FirebaseAuth.instance.currentUser;
+
       if (user == null) {
         return;
       }
@@ -43,6 +74,8 @@ class _PemesananPageState extends State<PemesananPage> {
       String pemesan = userData['username'] ?? '';
       String email = userData['email'] ?? '';
 
+      GeoPoint lokasi = GeoPoint(latitude, longitude);
+
       Map<String, dynamic> transaksiData = {
         'userid': user.uid,
         'pemesan': pemesan,
@@ -51,12 +84,18 @@ class _PemesananPageState extends State<PemesananPage> {
         'durasi': widget.workertime,
         'harga': widget.workerprice,
         'tanggal': currentDate,
+        'lokasi': lokasi,
       };
 
       await firestore.collection('transaksi').add(transaksiData);
 
       // Berhasil menyimpan data, lakukan tindakan lain atau navigasi ke halaman lain
       Navigator.pushNamed(context, '/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pembayaranm berhasil'),
+        ),
+      );
     } catch (e) {
       // Tangani kesalahan yang terjadi saat menyimpan data
       print('Terjadi kesalahan: $e');
@@ -186,7 +225,7 @@ class _PemesananPageState extends State<PemesananPage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                   ),
-                                  onPressed: _pushTransaksi,
+                                  onPressed: getLocation,
                                   child: Text(
                                     'Bayar',
                                     style: TextStyle(

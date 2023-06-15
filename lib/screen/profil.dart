@@ -163,14 +163,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               title: Text(userData['phoneNumber'] ?? ''),
                             ),
                             Divider(color: Colors.black),
-                            Container(
-                              alignment: Alignment.topRight,
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              child: IconButton(
-                                icon: Icon(Icons.my_location),
-                                onPressed: getLocation,
-                              ),
-                            ),
+                            // Container(
+                            //   alignment: Alignment.topRight,
+                            //   padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            //   child: IconButton(
+                            //     icon: Icon(Icons.my_location),
+                            //     onPressed: () {
+                            //       Navigator.pushNamed(context, '/map');
+                            //     },
+                            //   ),
+                            // ),
+                            SizedBox(height: 80),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,

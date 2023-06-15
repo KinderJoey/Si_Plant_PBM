@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'dart:convert';
 
 class RiwayatPage extends StatefulWidget {
   static const String routeName = '/riwayat';
@@ -11,18 +16,18 @@ class RiwayatPage extends StatefulWidget {
 
 class _RiwayatPageState extends State<RiwayatPage> {
   late Stream<QuerySnapshot> _riwayatStream;
+  MapController mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    // Menginisialisasi stream untuk mendapatkan riwayat transaksi dari Firestore
+
     _riwayatStream = _getRiwayatStream();
   }
 
   Stream<QuerySnapshot> _getRiwayatStream() {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // Pengguna tidak terautentikasi, kembalikan stream kosong
       return Stream.empty();
     }
 
@@ -78,7 +83,6 @@ class _RiwayatPageState extends State<RiwayatPage> {
               var riwayatData =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
 
-              // Mendapatkan nilai-nilai riwayat transaksi
               var pemesan = riwayatData['pemesan'] ?? '';
               var email = riwayatData['email'] ?? '';
               var namaPekerja = riwayatData['nama_pekerja'] ?? '';
@@ -101,19 +105,33 @@ class _RiwayatPageState extends State<RiwayatPage> {
                       margin:
                           EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       padding: EdgeInsets.all(16.0),
-                      child: ListTile(
-                        title: Text('Pemesan: $pemesan / $email'),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 15),
-                            Text('Nama Pekerja: $namaPekerja'),
-                            Text('Durasi: $durasi'),
-                            Text('Harga: $harga'),
-                            SizedBox(height: 10),
-                            Text('Tanggal Pemesanan: $tanggal'),
-                          ],
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text('Pemesan: $pemesan / $email'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 15),
+                                Text('Nama Pekerja: $namaPekerja'),
+                                Text('Durasi: $durasi'),
+                                Text('Harga: $harga'),
+                                SizedBox(height: 10),
+                                Text('Tanggal Pemesanan: $tanggal'),
+                              ],
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: Icon(Icons.map),
+                              onPressed: () {
+                                // Navigasi ke halaman peta di sini
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
