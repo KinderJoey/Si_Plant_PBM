@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'dart:convert';
+import 'package:siplant_pbm/screen/maps.dart';
 
 class RiwayatPage extends StatefulWidget {
   static const String routeName = '/riwayat';
@@ -89,6 +90,9 @@ class _RiwayatPageState extends State<RiwayatPage> {
               var durasi = riwayatData['durasi'] ?? '';
               var harga = riwayatData['harga'] ?? '';
               var tanggal = riwayatData['tanggal'] ?? '';
+              GeoPoint lokasi = riwayatData['lokasi'] ?? '';
+              double latitude = lokasi.latitude;
+              double longitude = lokasi.longitude;
 
               return Container(
                 child: Column(
@@ -127,7 +131,15 @@ class _RiwayatPageState extends State<RiwayatPage> {
                             child: IconButton(
                               icon: Icon(Icons.map),
                               onPressed: () {
-                                // Navigasi ke halaman peta di sini
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MapScreen(
+                                      latitude: latitude,
+                                      longitude: longitude,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                           ),

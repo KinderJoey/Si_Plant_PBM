@@ -12,6 +12,7 @@ import 'package:siplant_pbm/screen/edit_profil.dart';
 import 'package:siplant_pbm/screen/daftar_pekerja.dart';
 import 'package:siplant_pbm/screen/riwayat.dart';
 import 'package:siplant_pbm/screen/location_page.dart';
+import 'package:siplant_pbm/screen/maps.dart';
 
 final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => SplashScreen(),
