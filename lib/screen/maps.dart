@@ -39,7 +39,7 @@ class _MapScreenState extends State<MapScreen> {
         mapController: mapController,
         options: MapOptions(
           center: LatLng(widget.latitude, widget.longitude),
-          zoom: 13.0,
+          zoom: 15.0,
         ),
         layers: [
           TileLayerOptions(
@@ -53,7 +53,11 @@ class _MapScreenState extends State<MapScreen> {
                 height: 30.0,
                 point: LatLng(widget.latitude, widget.longitude),
                 builder: (ctx) => Container(
-                  child: FlutterLogo(),
+                  child: Icon(
+                    Icons.location_on,
+                    size: 40.0,
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ],
